@@ -1,0 +1,5 @@
+SELECT pnumber, pname
+FROM ((Employee join Department on Dno=Dnumber) join works_on on ssn=essn) join project on Pno=pnumber 
+WHERE dname='Administration' 
+GROUP BY pnumber, pname 
+HAVING count(*)= (SELECT count(*) from (employee join department on dno=dnumber) where dname='Administration' group by dno);

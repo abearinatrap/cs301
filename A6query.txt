@@ -1,0 +1,34 @@
+// My collection is called companies but I believe it is supposed to be called CS301
+// So i included the command twice, one with each collection name
+
+// Query 1
+db.companies.count({$and : [{founded_year:{$gte:2000}},{founded_year:{$lte:2010}}]})
+db.CS301.count({$and : [{founded_year:{$gte:2000}},{founded_year:{$lte:2010}}]})
+
+// Query 2
+db.companies.find({$or : [{founded_year:{$lt:1805}},{founded_year:{$gt:2012}}]},{_id:0,name:1, founded_year:1, category_code:1})
+db.CS301.find({$or : [{founded_year:{$lt:1805}},{founded_year:{$gt:2012}}]},{_id:0,name:1, founded_year:1, category_code:1})
+
+// Query 3
+db.companies.find({$and: [{founded_year:{$gt:2000}}, {number_of_employees:{$gte:5000}}]}, {_id:0,name:1, founded_year:1, number_of_employees:1, total_money_raised:1}).sort({founded_year:-1,name:1})
+db.CS301.find({$and: [{founded_year:{$gt:2000}}, {number_of_employees:{$gte:5000}}]}, {_id:0,name:1, founded_year:1, number_of_employees:1, total_money_raised:1}).sort({founded_year:-1,name:1})
+
+// Query 4
+db.companies.find({$and: [{founded_year:1800 }, { products:{ $exists:true, $not:{$size: 0}}}]},{_id:0,name:1,homepage_url:1,number_of_employees:1,products:{name:1}}) 
+db.CS301.find({$and: [{founded_year:1800 }, { products:{ $exists:true, $not:{$size: 0}}}]},{_id:0,name:1,homepage_url:1,number_of_employees:1,products:{name:1}}) 
+
+// Query 5
+db.companies.aggregate([{$match: {$and: [{founded_year:1800}, {products:{$exists:true, $not:{$size:0}}}]}},{$project:{_id:0, name:1, homepage_url:1, number_of_employees:1,products:{name:1}}}])
+db.CS301.aggregate([{$match: {$and: [{founded_year:1800}, {products:{$exists:true, $not:{$size:0}}}]}},{$project:{_id:0, name:1, homepage_url:1, number_of_employees:1,products:{name:1}}}])
+
+// Query 6
+db.companies.aggregate([{$match:{products:{$exists:true,$not:{$size:0}}}}, {$project:{_id:0,name:1,firstProd:{$first:"$products.name"}}}]) 
+db.CS301.aggregate([{$match:{products:{$exists:true,$not:{$size:0}}}}, {$project:{_id:0,name:1,firstProd:{$first:"$products.name"}}}]) 
+
+// Query 7
+db.companies.aggregate([{$match:{founded_year:{$gt:1990}}},{$group:{_id:"$founded_year", doc:{$max:{number_of_employees:"$number_of_employees", founded_year:"$founded_year"}}}}, {$replaceRoot:{newRoot:"$doc"}}, {$sort:{number_of_employees:-1}}])
+db.CS301.aggregate([{$match:{founded_year:{$gt:1990}}},{$group:{_id:"$founded_year", doc:{$max:{number_of_employees:"$number_of_employees", founded_year:"$founded_year"}}}}, {$replaceRoot:{newRoot:"$doc"}}, {$sort:{number_of_employees:-1}}])
+
+// Query 8
+db.companies.find({}, {number_of_employees:1,_id:0}).sort({"number_of_employees":-1}).limit(1) 
+db.CS301.find({}, {number_of_employees:1,_id:0}).sort({"number_of_employees":-1}).limit(1) 
